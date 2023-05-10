@@ -10,6 +10,7 @@ const timeElements = document.querySelectorAll('span');
 let countdownTitle = '';
 let countdownDate = '';
 let countdownValue = Date;
+let countdownActive;
 
 // Set Date Input Min With Today's Date
 const today = new Date().toISOString().split('T')[0];
@@ -17,6 +18,7 @@ dateEl.setAttribute('min', today);
 
 // Populate Countdown / Complete UI
 function updateDOM() {
+    countdownActive = setInterval(() => {
     const now = new Date().getTime();
     const distance = countdownValue - now;
     console.log('distance:', distance);
@@ -38,6 +40,7 @@ function updateDOM() {
     inputContainer.hidden = true;
     // Show Countdown
     countdownEl.hidden = false;
+    }, second);
 }
 
 const second = 1000;
@@ -51,11 +54,30 @@ function updateCountdown(e) {
     countdownTitle = e.srcElement[0].value;
     countdownDate = e.srcElement[1].value;
     console.log(countdownDate, countdownTitle);
-    // Get number version of current Date, Update DOM
-    countdownValue = new Date(countdownDate).getTime();
-    console.log('Countdown value:', countdownValue);
-    updateDOM();
+    // Check Valid Date
+    if(countdownDate === '') {
+        alert('Select DATE!')
+    } else {
+        // Get number version of current Date, Update DOM
+        countdownValue = new Date(countdownDate).getTime();
+        console.log('Countdown value:', countdownValue);
+        updateDOM();
+    }
 }
+
+// Reset
+function reset() {
+    // Hide Countdown, Show Input
+    countdownEl.hidden = true;
+    inputContainer.hidden = false;
+    // Stop Countdown
+    clearInterval(countdownActive);
+    // Reset Values
+    countdownTitle = '';
+    countdownDate = '';
+}
+
 
 // Event Listener
 countdownForm.addEventListener('submit',updateCountdown);
+countdownBtn.addEventListener('click', reset)
